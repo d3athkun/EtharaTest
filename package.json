@@ -1,0 +1,18 @@
+{
+  "name": "ethara-backend",
+  "version": "1.0.0",
+  "description": "TaskFlow project management API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "db:migrate": "npx prisma@5 migrate deploy",
+    "db:generate": "npx prisma@5 generate",
+    "db:push": "npx prisma@5 db push",
+    "db:studio": "npx prisma@5 studio",
+    "postinstall": "npx prisma@5 generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
