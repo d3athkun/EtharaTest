@@ -17,7 +17,7 @@ export default function LoginPage() {
       await login(form.email, form.password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || `Login failed (API: ${import.meta.env.VITE_API_URL || 'NOT SET - using localhost fallback'})`);
+      setError(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
