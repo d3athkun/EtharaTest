@@ -108,7 +108,7 @@ export default function ProjectsPage() {
             <div key={p.id} className="project-card" onClick={() => navigate(`/projects/${p.id}`)}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                 <h3 className="project-card-title">{p.name}</h3>
-                <span className={`badge ${p.role === 'ADMIN' ? 'badge-admin' : 'badge-member'}`}>{p.role}</span>
+                <span className={`badge ${p.role === 'ADMIN' ? 'badge-admin' : 'badge-member'}`}>{p.role === 'ADMIN' ? '👑 ADMIN' : '👤 MEMBER'}</span>
               </div>
               <p className="project-card-desc">{p.description || 'No description provided.'}</p>
               <div className="project-card-footer">

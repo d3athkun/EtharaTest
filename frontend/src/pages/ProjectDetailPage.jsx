@@ -210,14 +210,20 @@ export default function ProjectDetailPage() {
             style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
             ← Back to Projects
           </button>
-          <h1 className="page-title">{project.name}</h1>
-          {project.description && <p className="page-subtitle">{project.description}</p>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <h1 className="page-title" style={{ margin: 0 }}>{project.name}</h1>
+            <span className={`badge ${isAdmin ? 'badge-admin' : 'badge-member'}`}
+              style={{ fontSize: 11, padding: '3px 10px' }}>
+              {isAdmin ? '👑 Admin' : '👤 Member'}
+            </span>
+          </div>
+          {project.description && <p className="page-subtitle" style={{ marginTop: 4 }}>{project.description}</p>}
         </div>
         <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
           {isAdmin && (
             <>
               <button id="invite-member-btn" className="btn btn-secondary btn-sm" onClick={() => setShowInvite(true)}>
-                + Invite
+                👥 Invite
               </button>
               <button id="delete-project-btn" className="btn btn-danger btn-sm" onClick={handleDelete}>
                 Delete
@@ -229,6 +235,17 @@ export default function ProjectDetailPage() {
           </button>
         </div>
       </div>
+
+      {/* Role info banner for members */}
+      {!isAdmin && (
+        <div style={{
+          background: 'var(--blue-bg)', border: '1px solid var(--blue)', borderRadius: 10,
+          padding: '10px 16px', marginBottom: 20, fontSize: 13, color: 'var(--blue)',
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          🔒 <strong>Member view:</strong> You can update task statuses. Contact an admin to create tasks or invite members.
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 4, marginBottom: 20, background: 'var(--bg-card)', padding: 4, borderRadius: 10, width: 'fit-content', border: '1px solid var(--border)' }}>
@@ -315,7 +332,9 @@ export default function ProjectDetailPage() {
                 <div className="member-name">{m.user.name}</div>
                 <div className="member-email">{m.user.email}</div>
               </div>
-              <span className={`badge ${m.role === 'ADMIN' ? 'badge-admin' : 'badge-member'}`}>{m.role}</span>
+              <span className={`badge ${m.role === 'ADMIN' ? 'badge-admin' : 'badge-member'}`}>
+                {m.role === 'ADMIN' ? '👑 ADMIN' : '👤 MEMBER'}
+              </span>
               {isAdmin && m.user.id !== user.id && (
                 <button className="btn btn-ghost btn-sm" style={{ color: 'var(--red)' }}
                   onClick={() => handleRemoveMember(m.user.id)} title="Remove member">✕</button>

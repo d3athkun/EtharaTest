@@ -51,6 +51,11 @@ export default function Layout() {
             </svg>
             Tasks
           </NavLink>
+          <NavLink to="/admin" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            style={({ isActive }) => isActive ? {} : { color: 'var(--yellow)' }}>
+            <span style={{ fontSize: 16, lineHeight: 1 }}>👑</span>
+            Admin Panel
+          </NavLink>
         </nav>
 
         <div className="sidebar-footer">
