@@ -5,8 +5,13 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('tf_user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('tf_user');
+      return stored && stored !== 'undefined' ? JSON.parse(stored) : null;
+    } catch {
+      localStorage.removeItem('tf_user');
+      return null;
+    }
   });
 
   const login = useCallback(async (email, password) => {
