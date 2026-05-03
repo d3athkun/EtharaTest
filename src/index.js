@@ -1,7 +1,7 @@
 require('dotenv').config();
+const { execSync } = require('child_process');
 const express = require('express');
 const cors = require('cors');
-const { PrismaClient } = require('@prisma/client');
 
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
@@ -9,7 +9,17 @@ const taskRoutes = require('./routes/tasks');
 const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
-const prisma = new PrismaClient();
+
+// Run DB migrations on startup (safe to run multiple times)
+if (process.env.NODE_ENV === 'production') {
+  try {
+    console.log('Running database migrations...');
+    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+    console.log('Migrations complete.');
+  } catch (err) {
+    console.error('Migration warning (may already be applied):', err.message);
+  }
+}
 
 // Middleware
 app.use(cors({
@@ -18,7 +28,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Health check
+// Health check — responds immediately, even before DB is ready
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
