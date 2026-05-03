@@ -22,8 +22,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Middleware
+const clientOrigin = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim() : '*';
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: clientOrigin === '*' ? true : clientOrigin,
   credentials: true,
 }));
 app.use(express.json());
