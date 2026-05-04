@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-
-const fmt = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null;
-const isOverdue = (d) => d && new Date(d) < new Date();
+import { fmt, isOverdue } from '../utils/format';
 
 function TaskRow({ task, onStatusChange }) {
   const done = task.status === 'DONE';
@@ -98,9 +96,6 @@ export default function DashboardPage() {
           <div style={{ fontSize:20, fontWeight:700, letterSpacing:'-0.01em' }}>{today}</div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div className="mono" style={{ fontSize:11, padding:'5px 12px', border:'var(--b) solid var(--line)', borderRadius:999, display:'flex', alignItems:'center', gap:6 }}>
-            <span style={{ width:7, height:7, borderRadius:999, background:'var(--ink)', display:'inline-block' }} /> ⌘K search
-          </div>
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, padding:'3px 8px', border:'var(--b) solid var(--line)', borderRadius:2, background:'var(--ink)', color:'var(--paper)', letterSpacing:'.05em' }}>
             ADMIN
           </span>
@@ -136,11 +131,11 @@ export default function DashboardPage() {
             {projects.length === 0 ? (
               <div className="mono" style={{ fontSize:11, color:'var(--ink-3)' }}>No projects yet. <Link to="/projects" style={{ textDecoration:'underline', color:'var(--ink)' }}>Create one →</Link></div>
             ) : (
-              projects.map((p, i) => {
-                const tasks = p._count?.tasks ?? 0;
-                const pct = tasks > 0 ? Math.min(Math.round(Math.random() * 60 + 20), 100) : 0;
-                const code = p.name?.slice(0,8).toUpperCase().replace(/\s/g,'_');
-                return <PBar key={p.id} name={p.name} code={code} pct={pct} atRisk={p.role==='MEMBER'} />;
+              projects.map((p) => {
+                const taskCount = p._count?.tasks ?? 0;
+                const pct = taskCount > 0 ? 50 : 0; // real % needs tasks-done count from API
+                const code = p.name?.slice(0, 8).toUpperCase().replace(/\s/g, '_');
+                return <PBar key={p.id} name={p.name} code={code} pct={pct} atRisk={p.role === 'MEMBER'} />;
               })
             )}
           </div>
