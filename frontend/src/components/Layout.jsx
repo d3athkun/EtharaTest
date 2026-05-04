@@ -26,7 +26,7 @@ export default function Layout() {
             { to: '/tasks', label: 'Tasks', icon: (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             )},
-            { to: '/admin', label: 'Admin Panel', icon: <span style={{ fontSize: 14 }}>♛</span> },
+            ...(user?.isSuperAdmin ? [{ to: '/admin', label: 'Admin Panel', icon: <span style={{ fontSize: 14 }}>♛</span> }] : []),
           ].map(({ to, label, icon }) => (
             <NavLink key={to} to={to} className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
               <span style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{icon}</span>

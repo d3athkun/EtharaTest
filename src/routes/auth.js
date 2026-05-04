@@ -34,7 +34,8 @@ router.post('/signup', async (req, res, next) => {
     });
 
     const token = signToken({ userId: user.id });
-    res.status(201).json({ token, user });
+    const isSuperAdmin = user.email === process.env.SUPER_ADMIN_EMAIL;
+    res.status(201).json({ token, user: { ...user, isSuperAdmin } });
   } catch (err) {
     next(err);
   }
@@ -57,7 +58,8 @@ router.post('/login', async (req, res, next) => {
 
     const token = signToken({ userId: user.id });
     const { passwordHash, ...safeUser } = user;
-    res.json({ token, user: safeUser });
+    const isSuperAdmin = safeUser.email === process.env.SUPER_ADMIN_EMAIL;
+    res.json({ token, user: { ...safeUser, isSuperAdmin } });
   } catch (err) {
     next(err);
   }
