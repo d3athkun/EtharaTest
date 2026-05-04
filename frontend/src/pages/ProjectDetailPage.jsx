@@ -80,6 +80,51 @@ function ListView({ tasks, onStatusChange }) {
   );
 }
 
+function TimelineView({ tasks }) {
+  const weeks = ['W18','W19','W20','W21','W22'];
+  const offsets = [5,18,30,50,12,22,38,60,0,8];
+  const widths  = [22,18,30,24,28,16,22,30,20,25];
+  return (
+    <div style={{ flex:1, overflowY:'auto' }}>
+      {/* Ruler */}
+      <div style={{ display:'flex', borderBottom:'var(--b) solid var(--line)', paddingBottom:8, marginLeft:220, marginBottom:4 }}>
+        {weeks.map((w,i) => (
+          <div key={w} className="mono" style={{ flex:1, fontSize:10, color:'var(--ink-3)', borderRight:i<4?'1px dashed rgba(21,21,26,0.2)':'none', paddingLeft:6 }}>{w}</div>
+        ))}
+      </div>
+      {tasks.map((t,i) => {
+        const done = t.status === 'DONE';
+        const over = t.dueDate && new Date(t.dueDate) < new Date() && !done;
+        const left = (offsets[i % offsets.length]) + '%';
+        const width = (widths[i % widths.length]) + '%';
+        return (
+          <div key={t.id} style={{ display:'flex', alignItems:'center', padding:'8px 0', borderBottom:'1px solid rgba(21,21,26,0.08)' }}>
+            <div style={{ width:220, display:'flex', alignItems:'center', gap:8, paddingRight:12 }}>
+              <div style={{ width:14, height:14, border:'var(--b) solid var(--line)', borderRadius:2, flexShrink:0, background:done?'var(--ink)':'transparent' }} />
+              <div style={{ minWidth:0 }}>
+                <div className="mono" style={{ fontSize:9, color:'var(--ink-3)' }}>{t.status}</div>
+                <div style={{ fontSize:12, fontWeight:500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{t.title}</div>
+              </div>
+            </div>
+            <div style={{ flex:1, position:'relative', height:24 }}>
+              <div style={{
+                position:'absolute', top:0, bottom:0, left, width,
+                border:'var(--b) solid var(--line)',
+                background: over ? 'var(--accent)' : done ? 'var(--ink)' : 'var(--paper)',
+                color: over||done ? 'var(--paper)' : 'var(--ink)',
+                fontSize:10, padding:'0 6px', display:'flex', alignItems:'center',
+                fontFamily:"'JetBrains Mono',monospace",
+              }}>
+                {t.assignee?.name?.slice(0,2).toUpperCase()||'—'}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function InviteModal({ projectId, onClose, onInvited }) {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('MEMBER');
@@ -264,9 +309,9 @@ export default function ProjectDetailPage() {
             {/* View toggle — Tasks tab only */}
             {activeTab === 'tasks' && (
               <div style={{ display: 'flex', gap: 4 }}>
-                {[['list', 'List'], ['kanban', 'Board']].map(([k, l]) => (
+                {[['list','List'],['kanban','Board'],['timeline','Timeline']].map(([k,l]) => (
                   <button key={k} onClick={() => setView(k)} className="mono"
-                    style={{ fontSize: 11, padding: '4px 10px', border: 'var(--b) solid var(--line)', borderRadius: 2, background: view === k ? 'var(--ink)' : 'var(--paper)', color: view === k ? 'var(--paper)' : 'var(--ink)', cursor: 'pointer' }}>
+                    style={{ fontSize:11, padding:'4px 10px', border:'var(--b) solid var(--line)', borderRadius:2, background:view===k?'var(--ink)':'var(--paper)', color:view===k?'var(--paper)':'var(--ink)', cursor:'pointer' }}>
                     {l}
                   </button>
                 ))}
@@ -286,7 +331,9 @@ export default function ProjectDetailPage() {
           {activeTab === 'tasks' && (
             view === 'kanban'
               ? <KanbanView tasks={tasks} onStatusChange={handleStatusChange} />
-              : <ListView tasks={tasks} onStatusChange={handleStatusChange} />
+              : view === 'timeline'
+                ? <TimelineView tasks={tasks} />
+                : <ListView tasks={tasks} onStatusChange={handleStatusChange} />
           )}
 
           {activeTab === 'members' && (
