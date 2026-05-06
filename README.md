@@ -5,7 +5,7 @@ A full-stack project & task management app with role-based access control (Admin
 ## Live Demo
 
 > **Backend:** `https://<your-railway-backend-url>`
-> **Frontend:** `https://<your-railway-frontend-url>`
+> **Frontend:** `https://etharatest-production.up.railway.app/`
 
 ---
 
