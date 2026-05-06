@@ -1,9 +1,11 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../hooks/useTheme';
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggle } = useTheme();
 
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
@@ -43,10 +45,31 @@ export default function Layout() {
               <div className="sidebar-user-email">{user?.email}</div>
             </div>
           </div>
-          <button className="logout-btn" onClick={() => { logout(); navigate('/login'); }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign out
-          </button>
+
+          {/* Theme toggle + sign out row */}
+          <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+            <button
+              id="theme-toggle"
+              onClick={toggle}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                padding: '6px 10px', border: 'var(--b) solid var(--line)',
+                borderRadius: 'var(--radius)', background: 'none', color: 'var(--ink)',
+                fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
+                cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--ink)'; e.currentTarget.style.color = 'var(--paper)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--ink)'; }}
+            >
+              {theme === 'dark' ? '☀' : '☾'}
+            </button>
+
+            <button className="logout-btn" style={{ flex: 1 }} onClick={() => { logout(); navigate('/login'); }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out
+            </button>
+          </div>
         </div>
       </aside>
 
